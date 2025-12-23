@@ -19,12 +19,12 @@ create table `letsfutsal`.`user`
   `email`              varchar(100) not null unique,
   `password`           varchar(255) not null,
   `nickname`           varchar(30)  not null,
-  `created_at`         datetime              default current_timestamp(),
+  `created_at`         datetime              default current_timestamp(), -- 계정 생성일 (자동 생성)
   `gender`             enum('MALE', 'FEMALE') not null,
-  `preferred_position` varchar(30) null,
-  `introduction`       text null,
-  `point`              bigint       not null default 0,
-  `grade`              int          not null default 0
+  `preferred_position` varchar(30) null, -- 선호 포지션
+  `introduction`       text null, -- 자기 소개
+  `point`              bigint       not null default 0, -- 누적 경험치 포인트
+  `grade`              int          not null default 0 -- 변동 가능한 실력 등급
 );
 
 -- 팀
@@ -36,9 +36,9 @@ create table `letsfutsal`.`team`
   `gender`        enum('MALE', 'FEMALE', 'BOTH') null,
   `min_grade`     int null,
   `max_grade`     int null,
-  `region`        varchar(100) null,
-  `introduction`  text null,
-  constraint `fk_team_leader` foreign key (`leader_id`) references `letsfutsal`.`user` (`user_id`)
+  `region`        varchar(100) null, -- 개략적인 지역 (서울, 충북 등)
+  `introduction`  text null, -- 팀 소개
+  foreign key (`leader_id`) references `letsfutsal`.`user` (`user_id`)
 );
 
 -- 팀 멤버 목록
@@ -52,7 +52,7 @@ create table `letsfutsal`.`team_member`
   foreign key (`user_id`) references `letsfutsal`.`user` (`user_id`)
 );
 
--- 회원/팀 묶음
+-- 회원/팀 묶음 (회원이거나 팀이거나)
 create table `letsfutsal`.`entity`
 (
   `entity_id`   bigint auto_increment primary key,
@@ -61,7 +61,7 @@ create table `letsfutsal`.`entity`
   `team_id`     bigint null,
   foreign key (`user_id`) references `letsfutsal`.`user` (`user_id`),
   foreign key (`team_id`) references `letsfutsal`.`team` (`team_id`),
-  constraint `chk_entity_one_of` check (
+  check (
     (entity_type = 'USER' and user_id is not null and team_id is null) or
     (entity_type = 'TEAM' and team_id is not null and user_id is null)
     )
@@ -71,11 +71,11 @@ create table `letsfutsal`.`entity`
 create table `letsfutsal`.`stadium`
 (
   `stadium_id`    bigint auto_increment primary key,
-  `region`        varchar(100) not null,
-  `location`      varchar(300) not null,
-  `start_hour`    time         not null,
-  `end_hour`      time         not null,
-  `introduction`  text null
+  `region`        varchar(100) not null, -- 개략적인 지역 (서울, 충북 등)
+  `location`      varchar(300) not null, -- 상세 주소 (서울 동작구 XX동 등)
+  `start_hour`    time         not null, -- 운영 시작 시각
+  `end_hour`      time         not null, -- 운영 종료 시각
+  `introduction`  text null -- 구장 소개
 );
 
 -- 경기 (개인, 팀, 대여 모두 포함)
@@ -140,7 +140,7 @@ create table `letsfutsal`.`free_board_comment`
   `comment_id` bigint auto_increment primary key,
   `article_id` bigint not null,
   `author_id`  bigint not null,
-  `parent_id`  bigint null default 0,
+  `parent_id`  bigint null default 0, -- (존재할 시) 상위 덧글
   `content`    text   not null,
   foreign key (`article_id`) references `letsfutsal`.`free_board` (`article_id`),
   foreign key (`author_id`) references `letsfutsal`.`user` (`user_id`)
