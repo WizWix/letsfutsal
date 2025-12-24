@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="freeBoardMapper">
+
+    <select id="selectFreeBoardList"
+            resultType="com.letsfutsal.free.dto.FreeBoardDTO">
+        SELECT
+            fb.article_id,
+            fb.title,
+            fb.views,
+            u.nickname,
+            c.cate_name
+        FROM free_board fb
+        JOIN user u ON fb.author_id = u.user_id
+        JOIN free_board_category c ON fb.cate_id = c.cate_id
+        ORDER BY fb.article_id DESC
+    </select>
+
+</mapper>
