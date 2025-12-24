@@ -6,6 +6,7 @@ import io.github.wizwix.letsfutsal.dto.CommentDTO;
 import java.util.List;
 
 public interface BoardMapper {
+	
   int deleteArticle(long articleId);
 
   int deleteComment(long commendId);
@@ -29,4 +30,5 @@ public interface BoardMapper {
   List<ArticleDTO> selectArticlesByTitle(String title);
 
   List<CommentDTO> selectCommentsByArticleId(long articleId);
+  
 }
