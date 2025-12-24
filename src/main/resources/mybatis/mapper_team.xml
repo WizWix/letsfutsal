@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.TeamMapper">
-
+  <insert id="addMemberToTeam">
+    insert into `letsfutsal`.`team_member` (`team_id`, `user_id`)
+    values (#{teamId}, #{userId})
+  </insert>
+  <insert id="insertTeam" parameterType="io.github.wizwix.letsfutsal.dto.TeamDTO" useGeneratedKeys="true" keyProperty="team.teamId">
+    insert into `letsfutsal`.`team` (`team_name`, `leader_id`, `gender`, `min_grade`, `max_grade`, `region`, `introduction`)
+    values (#{team.teamName}, #{team.leaderId}, #{team.gender}, #{team.minGrade}, #{team.maxGrade}, #{team.region}, #{team.introduction})
+  </insert>
+  <delete id="removeMemberFromTeam">
+    delete
+    from `letsfutsal`.`team_member`
+    where `team_id` = #{teamId}
+      and `user_id` = #{userId}
+  </delete>
+  <select id="selectMembersByTeamId" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.UserDTO">
+    select u.*
+    from `letsfutsal`.`user` u
+           join `letsfutsal`.`team_member` tm on u.`user_id` = tm.`user_id`
+    where tm.`team_id` = #{teamId}
+  </select>
+  <select id="selectTeamById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
+    select *
+    from `letsfutsal`.`team`
+    where `team_id` = #{teamId}
+  </select>
+  <select id="selectTeamsByRegion" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
+    select *
+    from `letsfutsal`.`team`
+    where `region` = #{region}
+  </select>
+  <update id="updateTeam" parameterType="io.github.wizwix.letsfutsal.dto.TeamDTO">
+    update `letsfutsal`.`team`
+    set `team_name`    = #{team.teamName},
+        `gender`       = #{team.gender},
+        `min_grade`    = #{team.minGrade},
+        `max_grade`    = #{team.maxGrade},
+        `region`       = #{team.region},
+        `introduction` = #{team.introduction}
+    where `team_id` = #{team.teamId}
+  </update>
 </mapper>

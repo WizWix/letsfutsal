@@ -5,6 +5,11 @@
     <setting name="mapUnderscoreToCamelCase" value="true"/>
   </settings>
   <mappers>
-    <mapper resource="mybatis/user_dao_mapper.xml"/>
+    <mapper resource="mybatis/mapper_board.xml"/>
+    <mapper resource="mybatis/mapper_entity.xml"/>
+    <mapper resource="mybatis/mapper_match.xml"/>
+    <mapper resource="mybatis/mapper_stadium.xml"/>
+    <mapper resource="mybatis/mapper_team.xml"/>
+    <mapper resource="mybatis/mapper_user.xml"/>
   </mappers>
 </configuration>

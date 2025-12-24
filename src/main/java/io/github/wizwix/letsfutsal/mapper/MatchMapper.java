@@ -8,11 +8,11 @@ import java.util.List;
 public interface MatchMapper {
   int insertIndividualParticipant(@Param("matchId") long matchId, @Param("userId") long userId);
 
-  int insertMatch(MatchDTO match);
+  int insertMatch(@Param("match") MatchDTO match);
 
   int insertTeamParticipant(@Param("matchId") long matchId, @Param("teamId") long teamId);
 
-  MatchDTO selectMatchById(long matchId);
+  MatchDTO selectMatchById(@Param("matchId") long matchId);
 
   List<MatchDTO> selectMatchesByRegionAndType(@Param("region") String region, @Param("type") String type);
 

@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.StadiumMapper">
-
+  <insert id="insertStadium" parameterType="io.github.wizwix.letsfutsal.dto.StadiumDTO">
+    insert into `letsfutsal`.`stadium` (`region`, `location`, `start_hour`, `end_hour`, `introduction`)
+    values (#{stadium.region}, #{stadium.location}, #{stadium.startHour}, #{stadium.endHour}, #{stadium.introduction})
+  </insert>
+  <select id="selectAllStadiums" resultType="io.github.wizwix.letsfutsal.dto.StadiumDTO">
+    select *
+    from `letsfutsal`.`stadium`
+  </select>
+  <select id="selectStadiumById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.StadiumDTO">
+    select *
+    from `letsfutsal`.`stadium`
+    where `stadium_id` = #{stadiumId}
+  </select>
+  <select id="selectStadiumsByRegion" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.StadiumDTO">
+    select *
+    from `letsfutsal`.`stadium`
+    where `region` = #{region}
+  </select>
+  <update id="updateStadium" parameterType="io.github.wizwix.letsfutsal.dto.StadiumDTO">
+    update `letsfutsal`.`stadium`
+    set `region`       = #{stadium.region},
+        `location`     = #{stadium.location},
+        `start_hour`   = #{stadium.startHour},
+        `end_hour`     = #{stadium.endHour},
+        `introduction` = #{stadium.introduction}
+    where `stadium_id` = #{stadium.stadiumId}
+  </update>
 </mapper>

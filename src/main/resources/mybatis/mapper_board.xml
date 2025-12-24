@@ -46,7 +46,7 @@
     <bind name="pattern" value="'%' + commentContent + '%'"/>
     select distinct fb.*
     from `letsfutsal`.`free_board` fb
-    join letsfutsal.free_board_comment fbc on fb.article_id = fbc.article_id
+    join letsfutsal.free_board_comment fbc on fb.`article_id` = fbc.`article_id`
     where fbc.`content` like #{pattern}
   </select>
   <select id="selectArticlesByContent" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.wizwix.letsfutsal.mapper.EntityMapper">
+  <select id="findEntityIdByTeamId" parameterType="long" resultType="java.lang.Long">
+    select `entity_id`
+    from `letsfutsal`.`entity`
+    where `team_id` = #{teamId}
+      and `entity_type` = 'TEAM'
+  </select>
+  <select id="findEntityIdByUserId" parameterType="long" resultType="java.lang.Long">
+    select `entity_id`
+    from `letsfutsal`.`entity`
+    where `user_id` = #{userId}
+      and `entity_type` = 'USER'
+  </select>
+  <insert id="insertTeamEntity" parameterType="long">
+    insert into `letsfutsal`.`entity` (`entity_type`, `team_id`)
+    values ('TEAM', #{teamId})
+  </insert>
+  <insert id="insertUserEntity" parameterType="long">
+    insert into `letsfutsal`.`entity` (`entity_type`, `user_id`)
+    values ('USER', #{userId})
+  </insert>
+</mapper>

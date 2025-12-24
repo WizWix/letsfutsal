@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.MatchMapper">
-
+  <insert id="insertIndividualParticipant">
+    insert into `letsfutsal`.`match_individual_players` (`match_id`, `user_id`)
+    values (#{matchId}, #{userId})
+  </insert>
+  <insert id="insertMatch" parameterType="io.github.wizwix.letsfutsal.dto.MatchDTO" useGeneratedKeys="true" keyProperty="match.matchId">
+    insert into `letsfutsal`.`game_match` (`stadium_id`, `renter_entity_id`, `match_type`, `match_datetime`, `gender`, `min_grade`, `max_grade`, `status`)
+    values (#{match.stadiumId}, #{match.renterEntityId}, #{match.matchType}, #{match.matchDateTime}, #{match.gender}, #{match.minGrade}, #{match.maxGrade}, #{match.status})
+  </insert>
+  <insert id="insertTeamParticipant">
+    insert into `letsfutsal`.`match_team_participants` (`match_id`, `team_id`)
+    values (#{matchId}, #{teamId})
+  </insert>
+  <select id="selectMatchById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.MatchDTO">
+    select *
+    from `letsfutsal`.`game_match`
+    where `match_id` = #{matchId}
+  </select>
+  <select id="selectMatchesByRegionAndType" resultType="io.github.wizwix.letsfutsal.dto.MatchDTO">
+    select m.*
+    from `letsfutsal`.`game_match` m
+           join `letsfutsal`.`stadium` s on m.`stadium_id` = s.`stadium_id`
+    where s.`region` = #{region}
+      and m.match_type = #{type}
+  </select>
+  <update id="updateMatchStatus">
+    update `letsfutsal`.`game_match`
+    set `status` = #{status}
+    where `match_id` = #{matchId}
+  </update>
 </mapper>

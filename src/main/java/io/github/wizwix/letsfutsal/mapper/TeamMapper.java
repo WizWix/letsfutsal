@@ -9,15 +9,16 @@ import java.util.List;
 public interface TeamMapper {
   int addMemberToTeam(@Param("teamId") long teamId, @Param("userId") long userId);
 
-  int insertTeam(TeamDTO team);
+  int insertTeam(@Param("team") TeamDTO team);
 
-  int removeMemberToTeam(@Param("teamId") long teamId, @Param("userId") long userId);
+  int removeMemberFromTeam(@Param("teamId") long teamId, @Param("userId") long userId);
 
-  List<UserDTO> selectMembersByTeamId(long teamId);
+  List<UserDTO> selectMembersByTeamId(@Param("teamId") long teamId);
 
-  TeamDTO selectTeamById(long teamId);
+  TeamDTO selectTeamById(@Param("teamId") long teamId);
 
-  List<TeamDTO> selectTeamsByRegion(String region);
+  List<TeamDTO> selectTeamsByRegion(@Param("region") String region);
 
-  int updateTeam(TeamDTO team);
+  int updateTeam(@Param("team") TeamDTO team);
+
 }

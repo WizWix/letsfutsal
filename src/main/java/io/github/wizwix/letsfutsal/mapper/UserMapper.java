@@ -7,19 +7,19 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserMapper {
-  int deleteUser(long userId);
+  int deleteUser(@Param("userId") long userId);
 
-  int insertUser(UserDTO user);
+  int insertUser(@Param("user") UserDTO user);
 
-  List<TeamDTO> selectTeamsByUserId(long userId);
+  List<TeamDTO> selectTeamsByUserId(@Param("userId") long userId);
 
-  UserDTO selectUserByEmail(long email);
+  UserDTO selectUserByEmail(@Param("email") String email);
 
-  UserDTO selectUserById(long userId);
+  UserDTO selectUserById(@Param("userId") long userId);
 
   int updateGrade(@Param("userId") long userId, @Param("grade") long grade);
 
   int updatePoints(@Param("userId") long userId, @Param("point") long point);
 
-  int updateUser(UserDTO user);
+  int updateUser(@Param("user") UserDTO user);
 }
