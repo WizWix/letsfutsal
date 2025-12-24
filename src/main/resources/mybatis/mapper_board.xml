@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.wizwix.letsfutsal.mapper.BoardMapper">
+  <insert id="insertArticle">
+    insert into `letsfutsal`.`free_board` (`cate_id`, `author_id`, `title`, `content`) values (#{cateId}, #{authorId}, #{title}, #{content})
+  </insert>
+  <insert id="insertComment">
+    insert into `letsfutsal`.`free_board_comment` ()
+  </insert>
+  <update id="incrementArticleViews"></update>
+
+  <delete id="deleteArticle"></delete>
+  <delete id="deleteComment"></delete>
+  <select id="selectArticleById" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectArticlesByAuthorNickname" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectArticlesByCategory" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectArticlesByCommentContent" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectArticlesByContent" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectArticlesByTitle" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO"></select>
+  <select id="selectCommentsByArticleId" resultType="io.github.wizwix.letsfutsal.dto.CommentDTO"></select>
+</mapper>
