@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.letsfutsal.mapper.FreeBoardMapper">
+
+    <select id="selectBoardList" resultType="com.example.letsfutsal.domain.FreeBoardVO">
+        SELECT fb.*, u.nickname as authorNickname
+        FROM free_board fb
+        JOIN user u ON fb.author_id = u.user_id
+        <where>
+            <if test="query != null and query != ''">
+                AND (fb.title LIKE CONCAT('%', #{query}, '%') 
+                     OR fb.content LIKE CONCAT('%', #{query}, '%'))
+            </if>
+            <if test="writer != null and writer != ''">
+                AND u.nickname LIKE CONCAT('%', #{writer}, '%')
+            </if>
+        </where>
+        ORDER BY fb.article_id DESC
+    </select>
+
+    <select id="selectBoardById" resultType="com.example.letsfutsal.domain.FreeBoardVO">
+        SELECT fb.*, u.nickname as authorNickname
+        FROM free_board fb
+        JOIN user u ON fb.author_id = u.user_id
+        WHERE fb.article_id = #{articleId}
+    </select>
+
+    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="articleId">
+        INSERT INTO free_board (cate_id, author_id, title, content, views)
+        VALUES (#{cateId}, #{authorId}, #{title}, #{content}, 0)
+    </insert>
+
+    <update id="updateViews">
+        UPDATE free_board SET views = views + 1 WHERE article_id = #{articleId}
+    </update>
+
+</mapper>
