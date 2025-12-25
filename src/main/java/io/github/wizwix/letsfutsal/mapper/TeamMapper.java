@@ -2,17 +2,13 @@ package io.github.wizwix.letsfutsal.mapper;
 
 import io.github.wizwix.letsfutsal.dto.TeamDTO;
 import io.github.wizwix.letsfutsal.dto.UserDTO;
-
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
 public interface TeamMapper {
-	
   int addMemberToTeam(@Param("teamId") long teamId, @Param("userId") long userId);
 
   int insertTeam(@Param("team") TeamDTO team);
@@ -23,9 +19,9 @@ public interface TeamMapper {
 
   TeamDTO selectTeamById(@Param("teamId") long teamId);
 
+  List<TeamDTO> selectTeams();
+
   List<TeamDTO> selectTeamsByRegion(@Param("region") String region);
 
   int updateTeam(@Param("team") TeamDTO team);
-  
-  List<TeamDTO> selectAllTeams();
 }

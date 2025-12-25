@@ -22,6 +22,6 @@ public class TeamService {
   }
 
   public List<TeamDTO> list() {
-    return teamMapper.selectAllTeams();
+    return teamMapper.selectTeams();
   }
 }

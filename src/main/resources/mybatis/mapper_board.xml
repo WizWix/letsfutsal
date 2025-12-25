@@ -3,79 +3,93 @@
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.BoardMapper">
   <delete id="deleteArticle" parameterType="long">
     delete
-    from `letsfutsal`.`free_board`
-    where `article_id` = #{articleId}
+    from letsfutsal.free_board
+    where article_id = #{articleId}
   </delete>
   <update id="deleteComment" parameterType="long">
-    update `letsfutsal`.`free_board_comment`
-    set `content`    = '삭제된 댓글입니다',
-        `is_deleted` = true
-    where `comment_id` = #{commentId}
+    update letsfutsal.free_board_comment
+    set content    = '삭제된 댓글입니다',
+        is_deleted = true
+    where comment_id = #{commentId}
   </update>
   <update id="incrementArticleViews" parameterType="long">
-    update `letsfutsal`.`free_board`
-    set `views` = `views` + 1
-    where `article_id` = #{articleId}
+    update letsfutsal.free_board
+    set views = views + 1
+    where article_id = #{articleId}
   </update>
   <insert id="insertArticle" parameterType="io.github.wizwix.letsfutsal.dto.ArticleDTO" useGeneratedKeys="true" keyProperty="article.articleId">
-    insert into `letsfutsal`.`free_board` (`cate_id`, `author_id`, `title`, `content`)
+    insert into letsfutsal.free_board (cate_id, author_id, title, content)
     values (#{article.cateId}, #{article.authorId}, #{article.title}, #{article.content})
   </insert>
   <insert id="insertComment" parameterType="io.github.wizwix.letsfutsal.dto.CommentDTO" useGeneratedKeys="true" keyProperty="comment.commentId">
-    insert into `letsfutsal`.`free_board_comment` (`article_id`, `author_id`, `parent_id`, `content`)
+    insert into letsfutsal.free_board_comment (article_id, author_id, parent_id, content)
     values (#{comment.articleId}, #{comment.authorId}, #{comment.parentId}, #{comment.content})
   </insert>
-  <!-- TODO: selectArticles -->
-  <!-- TODO: selectArticlesById and other things requires author's nickname -->
+  <select id="selectArticles" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    order by fb.created_at desc
+  </select>
   <select id="selectArticleById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
-    select *
-    from `letsfutsal`.`free_board`
-    where `article_id` = #{articleId}
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where fb.article_id = #{articleId}
+    order by fb.created_at desc
   </select>
   <select id="selectArticlesByAuthorNickname" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     <bind name="pattern" value="'%' + nickname + '%'"/>
-    select fb.*
-    from `letsfutsal`.`free_board` fb
-    join `letsfutsal`.`user` u on fb.`author_id` = u.`user_id`
-    where u.`nickname` like #{pattern}
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where u.nickname like #{pattern}
+    order by fb.created_at desc
   </select>
   <select id="selectArticlesByCategoryId" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
-    select *
-    from `letsfutsal`.`free_board`
-    where `cate_id` = #{cateId}
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where fb.cate_id = #{cateId}
+    order by fb.created_at desc
   </select>
   <select id="selectArticlesByCommentContent" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     <bind name="pattern" value="'%' + commentContent + '%'"/>
-    select distinct fb.*
-    from `letsfutsal`.`free_board` fb
-    join letsfutsal.free_board_comment fbc on fb.`article_id` = fbc.`article_id`
-    where fbc.`content` like #{pattern}
+    select distinct fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.free_board_comment fbc on fb.article_id = fbc.article_id
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where fbc.content like #{pattern}
+    order by fb.created_at desc
   </select>
   <select id="selectArticlesByContent" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     <bind name="pattern" value="'%' + content + '%'"/>
-    select *
-    from `letsfutsal`.`free_board`
-    where `content` like #{pattern}
-    order by `created_at` desc
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where fb.content like #{pattern}
+    order by fb.created_at desc
   </select>
   <select id="selectArticlesByTitle" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     <bind name="pattern" value="'%' + title + '%'"/>
-    select *
-    from `letsfutsal`.`free_board`
-    where `title` like #{pattern}
-    order by `created_at` desc
+    select fb.*, u.nickname
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where fb.title like #{pattern}
+    order by fb.created_at desc
   </select>
   <select id="selectCommentsByArticleId" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.CommentDTO">
-    select *
-    from `letsfutsal`.`free_board_comment`
-    where `article_id` = #{articleId}
-    order by `created_at`
+    select fbc.*, u.nickname
+    from letsfutsal.free_board_comment fbc
+           join letsfutsal.user u on fbc.author_id = u.user_id
+    where fbc.article_id = #{articleId}
+    order by fbc.created_at
   </select>
   <update id="updateArticle" parameterType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
-    update `letsfutsal`.`free_board`
-    set `cate_id` = #{article.cateId},
-        `title`   = #{article.title},
-        `content` = #{article.content}
-    where `article_id` = #{article.articleId}
+    update letsfutsal.free_board
+    set cate_id = #{article.cateId},
+        title   = #{article.title},
+        content = #{article.content}
+    where article_id = #{article.articleId}
   </update>
 </mapper>
