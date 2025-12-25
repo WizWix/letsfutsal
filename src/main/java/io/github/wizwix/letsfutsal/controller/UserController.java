@@ -1,14 +1,14 @@
-package controller;
+package io.github.wizwix.letsfutsal.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import dto.UserDTO;
-import jakarta.servlet.http.HttpSession;  // jakarta 사용!
+import io.github.wizwix.letsfutsal.dto.UserDTO;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import service.UserService;
+import io.github.wizwix.letsfutsal.service.UserService;
 import java.util.List;
 
 @Slf4j
@@ -16,25 +16,25 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-    
+
     private final UserService userService;
-    
+
     @GetMapping("/register")
     public String registerForm() {
         return "user/register";
     }
-    
+
     @PostMapping("/register")
     public String register(@ModelAttribute UserDTO user) {
         userService.register(user);
         return "redirect:/user/login";
     }
-    
+
     @GetMapping("/login")
     public String loginForm() {
         return "user/login";
     }
-    
+
     @PostMapping("/login")
     public String login(@RequestParam(value = "email") String email,
                        @RequestParam(value = "password") String password,

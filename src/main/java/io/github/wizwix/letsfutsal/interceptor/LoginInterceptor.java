@@ -1,4 +1,4 @@
-package interceptor;
+package io.github.wizwix.letsfutsal.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +10,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-    	
+
         HttpSession session = request.getSession();
 
         // Check if user is logged in
@@ -18,10 +18,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             // Not logged in, redirect to login page
             response.sendRedirect(request.getContextPath() + "/user/login");
             return false;
-         
+
         }
 
         return true;
     }
-    
+
 }
