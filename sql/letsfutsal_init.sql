@@ -79,6 +79,7 @@ create table letsfutsal.entity
 create table letsfutsal.stadium
 (
   stadium_id   bigint auto_increment, -- [PK] 1부터 시작
+  name         varchar(100) not null, -- 구장 이름
   region       varchar(100) not null, -- 개략적인 지역 (서울, 충북 등)
   location     varchar(300) not null, -- 상세 주소 (서울 동작구 XX동 등)
   start_hour   time         not null, -- 운영 시작 시각
