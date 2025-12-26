@@ -4,9 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>팀 가입 페이지</title>
 </head>
 <body>
+
+  <h2>${team.teamName} 팀 가입하기</h2>
 
 </body>
 </html>

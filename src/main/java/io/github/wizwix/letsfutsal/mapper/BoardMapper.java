@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface BoardMapper {
-	
+
   /// Deletes an article and its associated comments.
   ///
   /// @param articleId The ID of the article to delete.

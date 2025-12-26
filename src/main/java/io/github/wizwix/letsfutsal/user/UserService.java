@@ -26,8 +26,6 @@ public class UserService implements IUserService {
     UserDTO user = userMapper.selectUserByEmail(email);
     if (user != null && user.getPassword().equals(password)) return user;
     return null;
-    
-    
   }
 
   @Override

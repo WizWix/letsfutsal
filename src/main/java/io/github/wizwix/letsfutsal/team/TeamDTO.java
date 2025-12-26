@@ -6,94 +6,92 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class TeamDTO {
-	
-	Gender gender;
-	String introduction;
-	long leaderId;
-	long maxGrade;
-	long minGrade;
-	String region;
-	long teamId;
-	String teamName;
-	
-	public TeamDTO() {
-	}
-	
-	public TeamDTO(Gender gender, String introduction, long leaderId, long maxGrade, long minGrade, String region,
-			long teamId, String teamName) {
-		super();
-		this.gender = gender;
-		this.introduction = introduction;
-		this.leaderId = leaderId;
-		this.maxGrade = maxGrade;
-		this.minGrade = minGrade;
-		this.region = region;
-		this.teamId = teamId;
-		this.teamName = teamName;
-	}
+  Gender gender;
+  String introduction;
+  long leaderId;
+  long maxGrade;
+  long minGrade;
+  String region;
+  long teamId;
+  String teamName;
 
-	public Gender getGender() {
-		return gender;
-	}
+  public TeamDTO() {
+  }
 
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
+  public TeamDTO(Gender gender, String introduction, long leaderId, long maxGrade, long minGrade, String region,
+      long teamId, String teamName) {
+    super();
+    this.gender = gender;
+    this.introduction = introduction;
+    this.leaderId = leaderId;
+    this.maxGrade = maxGrade;
+    this.minGrade = minGrade;
+    this.region = region;
+    this.teamId = teamId;
+    this.teamName = teamName;
+  }
 
-	public String getIntroduction() {
-		return introduction;
-	}
+  public Gender getGender() {
+    return gender;
+  }
 
-	public void setIntroduction(String introduction) {
-		this.introduction = introduction;
-	}
+  public void setGender(Gender gender) {
+    this.gender = gender;
+  }
 
-	public long getLeaderId() {
-		return leaderId;
-	}
+  public String getIntroduction() {
+    return introduction;
+  }
 
-	public void setLeaderId(long leaderId) {
-		this.leaderId = leaderId;
-	}
+  public void setIntroduction(String introduction) {
+    this.introduction = introduction;
+  }
 
-	public long getMaxGrade() {
-		return maxGrade;
-	}
+  public long getLeaderId() {
+    return leaderId;
+  }
 
-	public void setMaxGrade(long maxGrade) {
-		this.maxGrade = maxGrade;
-	}
+  public void setLeaderId(long leaderId) {
+    this.leaderId = leaderId;
+  }
 
-	public long getMinGrade() {
-		return minGrade;
-	}
+  public long getMaxGrade() {
+    return maxGrade;
+  }
 
-	public void setMinGrade(long minGrade) {
-		this.minGrade = minGrade;
-	}
+  public void setMaxGrade(long maxGrade) {
+    this.maxGrade = maxGrade;
+  }
 
-	public String getRegion() {
-		return region;
-	}
+  public long getMinGrade() {
+    return minGrade;
+  }
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
+  public void setMinGrade(long minGrade) {
+    this.minGrade = minGrade;
+  }
 
-	public long getTeamId() {
-		return teamId;
-	}
+  public String getRegion() {
+    return region;
+  }
 
-	public void setTeamId(long teamId) {
-		this.teamId = teamId;
-	}
+  public void setRegion(String region) {
+    this.region = region;
+  }
 
-	public String getTeamName() {
-		return teamName;
-	}
+  public long getTeamId() {
+    return teamId;
+  }
 
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
-	}
-	
+  public void setTeamId(long teamId) {
+    this.teamId = teamId;
+  }
+
+  public String getTeamName() {
+    return teamName;
+  }
+
+  public void setTeamName(String teamName) {
+    this.teamName = teamName;
+  }
 }

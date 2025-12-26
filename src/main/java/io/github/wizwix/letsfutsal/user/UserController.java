@@ -1,7 +1,6 @@
 package io.github.wizwix.letsfutsal.user;
 
 import io.github.wizwix.letsfutsal.dto.UserDTO;
-import io.github.wizwix.letsfutsal.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
