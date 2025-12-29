@@ -3,6 +3,7 @@ package io.github.wizwix.letsfutsal.board;
 import io.github.wizwix.letsfutsal.dto.ArticleDTO;
 import io.github.wizwix.letsfutsal.dto.CategoryDTO;
 import io.github.wizwix.letsfutsal.dto.CommentDTO;
+import io.github.wizwix.letsfutsal.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -27,15 +29,14 @@ public class FreeBoardController {
   // 글 삭제
   @PostMapping("/delete/{id}")
   public String delete(@PathVariable Long id, HttpSession session) {
-
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     ArticleDTO article = service.getArticleByIdWithoutIncreasingViews(id);
 
-    if (article == null || article.getAuthorId() != userId) {
+    if (article == null || article.getAuthorId() != user.getUserId()) {
       return "redirect:/free";
     }
 
@@ -49,9 +50,9 @@ public class FreeBoardController {
                               @RequestParam Long articleId,
                               HttpSession session) {
 
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     service.deleteComment(commentId);
@@ -66,14 +67,14 @@ public class FreeBoardController {
                      @RequestParam String content,
                      HttpSession session) {
 
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     ArticleDTO article = service.getArticleByIdWithoutIncreasingViews(id);
 
-    if (article == null || article.getAuthorId() != userId) {
+    if (article == null || article.getAuthorId() != user.getUserId()) {
       return "redirect:/free";
     }
 
@@ -85,9 +86,7 @@ public class FreeBoardController {
 
     boolean updated = service.updateArticle(dto);
 
-    return updated
-        ? "redirect:/free/view/" + id
-        : "redirect:/free/edit/" + id;
+    return updated ? "redirect:/free/view/" + id : "redirect:/free/edit/" + id;
   }
 
   // 글 수정 폼
@@ -96,14 +95,14 @@ public class FreeBoardController {
                          HttpSession session,
                          Model model) {
 
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     ArticleDTO article = service.getArticleByIdWithoutIncreasingViews(id);
 
-    if (article == null || article.getAuthorId() != userId) {
+    if (article == null || article.getAuthorId() != user.getUserId()) {
       return "redirect:/free";
     }
 
@@ -112,7 +111,7 @@ public class FreeBoardController {
     model.addAttribute("article", article);
     model.addAttribute("categories", categories);
 
-    return "freeboard/edit";
+    return "board/edit";
   }
 
   // 게시글 목록 (1페이지)
@@ -128,7 +127,7 @@ public class FreeBoardController {
     model.addAttribute("totalPages", totalPages);
     model.addAttribute("totalCount", totalCount);
 
-    return "freeboard/list"; // /WEB-INF/views/list.jsp
+    return "board/list"; // /WEB-INF/views/board/list.jsp
   }
 
   // 페이지별 목록
@@ -153,32 +152,66 @@ public class FreeBoardController {
     model.addAttribute("totalPages", totalPages);
     model.addAttribute("totalCount", totalCount);
 
-    return "freeboard/list";
+    return "board/list";
   }
 
   // 게시글 검색
   @GetMapping("/search")
-  public String search(@RequestParam(required = false) String query,
-                       @RequestParam(required = false) String writer,
-                       @RequestParam(defaultValue = "1") int page,
-                       Model model) {
-
+  public String search(
+      @RequestParam(name = "searchType", required = false) String searchType,
+      @RequestParam(name = "query", required = false) String query,
+      @RequestParam(defaultValue = "1") int page,
+      Model model
+  ) {
     if (page < 1) page = 1;
-
-    int totalCount = service.getSearchArticleCount(query, writer);
+    int totalCount;
+    switch (searchType) {
+      case "comment" -> {
+        totalCount = service.getArticleCountByCommentContent(query);
+      }
+      case "content" -> {
+        totalCount = service.getArticleCountByContent(query);
+      }
+      case "nickname" -> {
+        totalCount = service.getArticleCountByAuthorNickname(query);
+      }
+      case "title" -> {
+        totalCount = service.getArticleCountByTitle(query);
+      }
+      default -> {
+        totalCount = 0;
+      }
+    }
     int totalPages = (int) Math.ceil((double) totalCount / ARTICLES_PER_PAGE);
-
     int offset = (page - 1) * ARTICLES_PER_PAGE;
-    List<ArticleDTO> articles = service.searchArticles(query, writer, offset, ARTICLES_PER_PAGE);
+
+    List<ArticleDTO> articles;
+    switch (searchType) {
+      case "comment" -> {
+        articles = service.getArticlesByCommentContent(query);
+      }
+      case "content" -> {
+        articles = service.getArticlesByContent(query);
+      }
+      case "nickname" -> {
+        articles = service.getArticlesByAuthorNickname(query);
+      }
+      case "title" -> {
+        articles = service.getArticlesByTitle(query);
+      }
+      default -> {
+        articles = new ArrayList<>();
+      }
+    }
+    if (articles.size() > ARTICLES_PER_PAGE) articles.subList(offset, ARTICLES_PER_PAGE);
 
     model.addAttribute("articles", articles);
     model.addAttribute("currentPage", page);
     model.addAttribute("totalPages", totalPages);
     model.addAttribute("totalCount", totalCount);
     model.addAttribute("query", query);
-    model.addAttribute("writer", writer);
 
-    return "freeboard/search";
+    return "board/search";
   }
 
   // 게시글 상세
@@ -194,7 +227,7 @@ public class FreeBoardController {
     model.addAttribute("article", article);
     model.addAttribute("comments", comments);
 
-    return "freeboard/view";
+    return "board/view";
   }
 
   // 글쓰기 처리
@@ -204,9 +237,9 @@ public class FreeBoardController {
                       @RequestParam String content,
                       HttpSession session) {
 
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     if (title == null || title.trim().isEmpty()
@@ -216,7 +249,7 @@ public class FreeBoardController {
 
     ArticleDTO dto = new ArticleDTO();
     dto.setCateId(cateId);
-    dto.setAuthorId(userId);
+    dto.setAuthorId(user.getUserId());
     dto.setTitle(title);
     dto.setContent(content);
 
@@ -234,15 +267,15 @@ public class FreeBoardController {
                              @RequestParam String content,
                              HttpSession session) {
 
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     CommentDTO dto = new CommentDTO();
     dto.setArticleId(articleId);
-    dto.setAuthorId(userId);
-    dto.setParentId(parentId);
+    dto.setAuthorId(user.getUserId());
+    if (parentId != null) dto.setParentId(parentId);
     dto.setContent(content);
 
     service.insertComment(dto);
@@ -252,15 +285,15 @@ public class FreeBoardController {
   // 글쓰기 폼
   @GetMapping("/write")
   public String writeForm(HttpSession session, Model model) {
-    Long userId = (Long) session.getAttribute("userId");
-    if (userId == null) {
-      return "redirect:/login";
+    UserDTO user = (UserDTO) session.getAttribute("loginUser");
+    if (user == null) {
+      return "redirect:/user/login";
     }
 
     List<CategoryDTO> categories =
         service.getAllCategories();
 
     model.addAttribute("categories", categories);
-    return "freeboard/write";
+    return "board/write";
   }
 }

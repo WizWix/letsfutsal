@@ -90,7 +90,7 @@ public class CommentDTO {
 
   public void setNickname(String nickname) {this.nickname = nickname;}
 
-  public long getParentId() {return this.parentId;}
+  public Long getParentId() {return this.parentId;}
 
   public void setParentId(long parentId) {this.parentId = parentId;}
 

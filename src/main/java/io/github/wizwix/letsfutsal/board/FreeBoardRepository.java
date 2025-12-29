@@ -3,22 +3,16 @@ package io.github.wizwix.letsfutsal.board;
 import io.github.wizwix.letsfutsal.dto.ArticleDTO;
 import io.github.wizwix.letsfutsal.dto.CategoryDTO;
 import io.github.wizwix.letsfutsal.dto.CommentDTO;
+import io.github.wizwix.letsfutsal.mapper.BoardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
 public class FreeBoardRepository {
-  private JdbcTemplate jdbcTemplate;
-
   private final RowMapper<ArticleDTO> articleRowMapper = (rs, rowNum) -> {
     ArticleDTO dto = new ArticleDTO();
     dto.setArticleId(rs.getLong("article_id"));
@@ -35,7 +29,6 @@ public class FreeBoardRepository {
     dto.setAuthorNickname(rs.getString("nickname"));
     return dto;
   };
-
   private final RowMapper<CategoryDTO> categoryRowMapper = (rs, rowNum) -> {
     CategoryDTO dto = new CategoryDTO();
     dto.setCateId(rs.getLong("cate_id"));
@@ -58,175 +51,99 @@ public class FreeBoardRepository {
     dto.setNickname(rs.getString("nickname"));
     return dto;
   };
+  @Autowired
+  private BoardMapper boardMapper;
 
   // 게시글 삭제
-  public int deleteArticle(Long articleId) {
-    String sql = "delete from letsfutsal.free_board where article_id = ?";
-    return jdbcTemplate.update(sql, articleId);
+  public long deleteArticle(Long articleId) {
+    return boardMapper.deleteArticle(articleId);
   }
 
   // 댓글 삭제 (소프트 삭제)
-  public int deleteComment(Long commentId) {
-    String sql = "update letsfutsal.free_board_comment set is_deleted = true where comment_id = ?";
-    return jdbcTemplate.update(sql, commentId);
+  public long deleteComment(Long commentId) {
+    return boardMapper.deleteComment(commentId);
   }
 
   // 카테고리 목록
   public List<CategoryDTO> getAllCategories() {
-    String sql = "select cate_id, cate_name from letsfutsal.free_board_category order by cate_id";
-    return jdbcTemplate.query(sql, categoryRowMapper);
+    return boardMapper.selectAllCategories();
   }
 
   // 게시글 상세 조회
   public ArticleDTO getArticleById(Long articleId) {
-    String sql = "select fb.article_id, fb.cate_id, fb.author_id, fb.title, fb.content, " +
-        "fb.created_at, fb.views, fbc.cate_name, u.nickname " +
-        "from letsfutsal.free_board fb " +
-        "join letsfutsal.free_board_category fbc on fb.cate_id = fbc.cate_id " +
-        "join letsfutsal.user u on fb.author_id = u.user_id " +
-        "where fb.article_id = ?";
+    return boardMapper.selectArticleById(articleId);
+  }
 
-    List<ArticleDTO> results = jdbcTemplate.query(sql, articleRowMapper, articleId);
-    return results.isEmpty() ? null : results.get(0);
+  public int getArticleCountByAuthorNickname(String query) {
+    return boardMapper.selectArticleCountByAuthorNickname(query);
+  }
+
+  public int getArticleCountByCommentContent(String query) {
+    return boardMapper.selectArticleCountByCommentContent(query);
+  }
+
+  public int getArticleCountByContent(String query) {
+    return boardMapper.selectArticleCountByContent(query);
+  }
+
+  public int getArticleCountByTitle(String query) {
+    return boardMapper.selectArticleCountByTitle(query);
   }
 
   // 게시글 목록 조회
   public List<ArticleDTO> getArticleList(int offset, int limit) {
-    String sql = "select fb.article_id, fb.cate_id, fb.author_id, fb.title, fb.content, " +
-        "fb.created_at, fb.views, fbc.cate_name, u.nickname " +
-        "from letsfutsal.free_board fb " +
-        "join letsfutsal.free_board_category fbc on fb.cate_id = fbc.cate_id " +
-        "join letsfutsal.user u on fb.author_id = u.user_id " +
-        "order by fb.article_id desc limit ? offset ?";
-
-    return jdbcTemplate.query(sql, articleRowMapper, limit, offset);
+    return boardMapper.selectArticles(offset, limit);
   }
 
   // 댓글 목록
   public List<CommentDTO> getCommentsByArticleId(Long articleId) {
-    String sql = "select fbc.comment_id, fbc.article_id, fbc.author_id, fbc.parent_id, " +
-        "fbc.content, fbc.created_at, fbc.is_deleted, u.nickname " +
-        "from letsfutsal.free_board_comment fbc " +
-        "join letsfutsal.user u on fbc.author_id = u.user_id " +
-        "where fbc.article_id = ? order by fbc.comment_id asc";
-
-    return jdbcTemplate.query(sql, commentRowMapper, articleId);
+    return boardMapper.selectCommentsByArticleId(articleId);
   }
 
   // 검색 결과 개수
   public int getSearchArticleCount(String query, String writer) {
-    StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM letsfutsal.free_board fb ");
-    sql.append("JOIN letsfutsal.users u ON fb.author_id = u.user_id WHERE 1=1 ");
-
-    if (query != null && !query.trim().isEmpty()) {
-      sql.append("AND (fb.title LIKE ? OR fb.content LIKE ?) ");
-    }
-    if (writer != null && !writer.trim().isEmpty()) {
-      sql.append("AND u.nickname LIKE ? ");
-    }
-
-    if (query != null && !query.trim().isEmpty() && writer != null && !writer.trim().isEmpty()) {
-      Integer count = jdbcTemplate.queryForObject(sql.toString(), Integer.class,
-          "%" + query + "%", "%" + query + "%", "%" + writer + "%");
-      return count != null ? count : 0;
-    } else if (query != null && !query.trim().isEmpty()) {
-      Integer count = jdbcTemplate.queryForObject(sql.toString(), Integer.class,
-          "%" + query + "%", "%" + query + "%");
-      return count != null ? count : 0;
-    } else if (writer != null && !writer.trim().isEmpty()) {
-      Integer count = jdbcTemplate.queryForObject(sql.toString(), Integer.class,
-          "%" + writer + "%");
-      return count != null ? count : 0;
-    }
-
-    Integer count = jdbcTemplate.queryForObject(sql.toString(), Integer.class);
-    return count != null ? count : 0;
+    return boardMapper.selectArticleCount(query, writer);
   }
 
   // 전체 게시글 개수
   public int getTotalArticleCount() {
-    String sql = "select count(*) from letsfutsal.free_board";
-    Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-    return count != null ? count : 0;
+    return boardMapper.countTotalArticles();
   }
 
   // 조회수 증가
   public void increaseViews(Long articleId) {
-    String sql = "update letsfutsal.free_board set views = views + 1 where article_id = ?";
-    jdbcTemplate.update(sql, articleId);
+    boardMapper.incrementArticleViews(articleId);
   }
 
   // 게시글 작성
   public Long insertArticle(ArticleDTO dto) {
-    String sql = "insert into letsfutsal.free_board (cate_id, author_id, title, content) values (?, ?, ?, ?)";
-
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(connection -> {
-      PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-      ps.setLong(1, dto.getCateId());
-      ps.setLong(2, dto.getAuthorId());
-      ps.setString(3, dto.getTitle());
-      ps.setString(4, dto.getContent());
-      return ps;
-    }, keyHolder);
-
-    return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+    return boardMapper.insertArticle(dto);
   }
 
   // 댓글 작성
   public Long insertComment(CommentDTO dto) {
-    String sql = "insert into letsfutsal.free_board_comment (article_id, author_id, parent_id, content) values (?, ?, ?, ?)";
-
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(connection -> {
-      PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-      ps.setLong(1, dto.getArticleId());
-      ps.setLong(2, dto.getAuthorId());
-      if (dto.getParentId() > 0) {
-        ps.setLong(3, dto.getParentId());
-      } else {
-        ps.setNull(3, java.sql.Types.BIGINT);
-      }
-      ps.setString(4, dto.getContent());
-      return ps;
-    }, keyHolder);
-
-    return keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+    return boardMapper.insertComment(dto);
   }
 
-  // 게시글 검색
-  public List<ArticleDTO> searchArticles(String query, String writer, int offset, int limit) {
-    StringBuilder sql = new StringBuilder("SELECT fb.article_id, fb.cate_id, fb.author_id, fb.title, fb.content, ");
-    sql.append("fb.created_at, fb.views, fbc.cate_name, u.nickname ");
-    sql.append("FROM letsfutsal.free_board fb ");
-    sql.append("JOIN letsfutsal.free_board_category fbc ON fb.cate_id = fbc.cate_id ");
-    sql.append("JOIN letsfutsal.users u ON fb.author_id = u.user_id WHERE 1=1 ");
+  // 게시글 검색 (글쓴이)
+  public List<ArticleDTO> searchArticlesByAuthorNickname(String query) {
+    return boardMapper.selectArticlesByAuthorNickname(query);
+  }
 
-    if (query != null && !query.trim().isEmpty()) {
-      sql.append("AND (fb.title LIKE ? OR fb.content LIKE ?) ");
-    }
-    if (writer != null && !writer.trim().isEmpty()) {
-      sql.append("AND u.nickname LIKE ? ");
-    }
-    sql.append("ORDER BY fb.article_id DESC LIMIT ? OFFSET ?");
+  public List<ArticleDTO> searchArticlesByCommentContent(String query) {
+    return boardMapper.selectArticlesByCommentContent(query);
+  }
 
-    if (query != null && !query.trim().isEmpty() && writer != null && !writer.trim().isEmpty()) {
-      return jdbcTemplate.query(sql.toString(), articleRowMapper,
-          "%" + query + "%", "%" + query + "%", "%" + writer + "%", limit, offset);
-    } else if (query != null && !query.trim().isEmpty()) {
-      return jdbcTemplate.query(sql.toString(), articleRowMapper,
-          "%" + query + "%", "%" + query + "%", limit, offset);
-    } else if (writer != null && !writer.trim().isEmpty()) {
-      return jdbcTemplate.query(sql.toString(), articleRowMapper,
-          "%" + writer + "%", limit, offset);
-    }
+  public List<ArticleDTO> searchArticlesByContent(String query) {
+    return boardMapper.selectArticlesByContent(query);
+  }
 
-    return jdbcTemplate.query(sql.toString(), articleRowMapper, limit, offset);
+  public List<ArticleDTO> searchArticlesByTitle(String query) {
+    return boardMapper.selectArticlesByTitle(query);
   }
 
   // 게시글 수정
   public int updateArticle(ArticleDTO dto) {
-    String sql = "update letsfutsal.free_board set cate_id = ?, title = ?, content = ? where article_id = ?";
-    return jdbcTemplate.update(sql, dto.getCateId(), dto.getTitle(), dto.getContent(), dto.getArticleId());
+    return boardMapper.updateArticle(dto);
   }
 }

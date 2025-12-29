@@ -27,6 +27,7 @@ public class StadiumController {
   }
 
   // 메인
+  @SuppressWarnings("ConfusingMainMethod")
   @GetMapping("")
   public String main() {
     return "stadium/main";
@@ -34,7 +35,7 @@ public class StadiumController {
 
   // 2. 구장 상세 페이지
   @GetMapping("/profile/{stadiumId}")
-  public String profile(@PathVariable long stadiumId, Model model) {
+  public String profile(@PathVariable("stadiumId") long stadiumId, Model model) {
     model.addAttribute("stadium", service.get(stadiumId));
     return "stadium/profile";
   }
@@ -56,16 +57,11 @@ public class StadiumController {
 
   // 3. 대여 예약 페이지
   @GetMapping("/rent/{stadiumId}")
-  public String rentForm(@PathVariable long stadiumId, Model model, HttpSession session) {
-
-//		StadiumDTO stadium = service.get(stadiumId);
-//		model.addAttribute("stadium", stadium);
+  public String rentForm(@PathVariable("stadiumId") long stadiumId, Model model, HttpSession session) {
     model.addAttribute("stadium", service.get(stadiumId));
-
     // 로그인 유저
     UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
     model.addAttribute("loginUser", loginUser);
-
     return "stadium/rent";
   }
 }

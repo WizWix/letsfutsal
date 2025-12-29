@@ -20,6 +20,8 @@ public interface TeamMapper {
 
   TeamDTO selectTeamById(@Param("teamId") long teamId);
 
+  TeamDTO selectTeamWithLeader(@Param("teamId") long teamId);
+
   List<TeamDTO> selectTeams();
 
   List<TeamDTO> selectTeamsByRegion(@Param("region") String region);

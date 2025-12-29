@@ -1,16 +1,17 @@
 package io.github.wizwix.letsfutsal.match;
 
 import io.github.wizwix.letsfutsal.dto.MatchDTO;
+import io.github.wizwix.letsfutsal.enums.Gender;
 import io.github.wizwix.letsfutsal.enums.Match;
 import io.github.wizwix.letsfutsal.mapper.MatchMapper;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
 public class MatchRepository {
-
   private final MatchMapper matchMapper;
 
   public MatchRepository(MatchMapper matchMapper) {
@@ -33,8 +34,7 @@ public class MatchRepository {
   }
 
   // 경기 목록 조회 (필터링 포함)
-  public List<MatchDTO> getMatchList(Match matchType, String stadiumName, LocalDateTime startDateTime, LocalDateTime endDateTime, String gender, Integer minGrade, Integer maxGrade, Boolean available) {
-    return matchMapper.selectMatchList(matchType, stadiumName, startDateTime, endDateTime, gender, minGrade, maxGrade, available);
+  public List<MatchDTO> getMatchList(Match matchType, String region, LocalTime startHour, LocalTime endHour, Gender gender, Integer minGrade, Integer maxGrade, Integer status) {
+    return matchMapper.selectMatchList(matchType, region, startHour, endHour, gender, minGrade, maxGrade, status);
   }
 }
-

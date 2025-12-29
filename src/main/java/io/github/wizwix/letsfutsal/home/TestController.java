@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class ControllerTest {
+public class TestController {
   /// Test code. If you can't access `localhost:8080/test` or don't see `aaaaaaaaaaaaaaaa` in your browser, something is wrong about Tomcat or Spring MVC configuration.
   @GetMapping("/test")
   @ResponseBody

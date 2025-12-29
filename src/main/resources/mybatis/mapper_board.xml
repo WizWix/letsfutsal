@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.BoardMapper">
+  <select id="countTotalArticles" resultType="int">
+    select count(*)
+    from letsfutsal.free_board
+  </select>
   <delete id="deleteArticle" parameterType="long">
     delete
     from letsfutsal.free_board
@@ -23,20 +27,62 @@
   </insert>
   <insert id="insertComment" parameterType="io.github.wizwix.letsfutsal.dto.CommentDTO" useGeneratedKeys="true" keyProperty="comment.commentId">
     insert into letsfutsal.free_board_comment (article_id, author_id, parent_id, content)
-    values (#{comment.articleId}, #{comment.authorId}, #{comment.parentId}, #{comment.content})
+    values (#{comment.articleId}, #{comment.authorId}, #{comment.parentId,jdbcType=BIGINT}, #{comment.content})
   </insert>
-  <select id="selectArticles" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
-    select fb.*, u.nickname
+  <select id="selectAllCategories" resultType="io.github.wizwix.letsfutsal.dto.CategoryDTO">
+    select *
+    from letsfutsal.free_board_category
+    order by cate_id
+  </select>
+  <select id="selectArticles" parameterType="int" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
+    select fb.*, u.nickname as authorNickname, fbc.cate_name
     from letsfutsal.free_board fb
            join letsfutsal.user u on fb.author_id = u.user_id
-    order by fb.created_at desc
+           join letsfutsal.free_board_category fbc on fb.cate_id = fbc.cate_id
+    order by fb.article_id desc
+    limit #{limit} offset #{offset}
   </select>
   <select id="selectArticleById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
-    select fb.*, u.nickname
+    select fb.*, u.nickname as authorNickname, fbc.cate_name
     from letsfutsal.free_board fb
            join letsfutsal.user u on fb.author_id = u.user_id
+           join letsfutsal.free_board_category fbc on fb.cate_id = fbc.cate_id
     where fb.article_id = #{articleId}
     order by fb.created_at desc
+  </select>
+  <select id="selectArticleCount" resultType="int">
+    select count(*)
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where 1=1
+    <if test="not empty query">
+      and (fb.title like #{query} or fb.content like #{query})
+    </if>
+    <if test="not empty writer">
+      and u.nickname like #{writer}
+    </if>
+  </select>
+  <select id="selectArticleCountByAuthorNickname" parameterType="string" resultType="int">
+    select count(*)
+    from letsfutsal.free_board fb
+           join letsfutsal.user u on fb.author_id = u.user_id
+    where u.nickname like concat('%', #{nickname}, '%')
+  </select>
+  <select id="selectArticleCountByCommentContent" parameterType="string" resultType="int">
+    select count(*)
+    from letsfutsal.free_board fb
+           join letsfutsal.free_board_comment fbc on fb.article_id = fbc.article_id
+    where fbc.content like concat('%', #{commentContent}, '%')
+  </select>
+  <select id="selectArticleCountByContent" parameterType="string" resultType="int">
+    select count(*)
+    from letsfutsal.free_board
+    where content like concat('%', #{content}, '%')
+  </select>
+  <select id="selectArticleCountByTitle" parameterType="string" resultType="int">
+    select count(*)
+    from letsfutsal.free_board
+    where title like concat('%', #{title}, '%')
   </select>
   <select id="selectArticlesByAuthorNickname" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     select fb.*, u.nickname
@@ -79,7 +125,7 @@
     from letsfutsal.free_board_comment fbc
            join letsfutsal.user u on fbc.author_id = u.user_id
     where fbc.article_id = #{articleId}
-    order by fbc.created_at
+    order by fbc.comment_id
   </select>
   <update id="updateArticle" parameterType="io.github.wizwix.letsfutsal.dto.ArticleDTO">
     update letsfutsal.free_board

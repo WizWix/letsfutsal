@@ -1,42 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.wizwix.letsfutsal.mapper.TeamMapper">
+  <!-- 팀 멤버 추가 -->
   <insert id="addMemberToTeam">
     insert into letsfutsal.team_member (team_id, user_id)
     values (#{teamId}, #{userId})
   </insert>
+  <!-- 팀 생성 -->
   <insert id="insertTeam" parameterType="io.github.wizwix.letsfutsal.dto.TeamDTO" useGeneratedKeys="true" keyProperty="team.teamId">
     insert into letsfutsal.team (team_name, leader_id, gender, min_grade, max_grade, region, introduction)
     values (#{team.teamName}, #{team.leaderId}, #{team.gender}, #{team.minGrade}, #{team.maxGrade}, #{team.region}, #{team.introduction})
   </insert>
+  <!-- 팀 멤버 삭제 -->
   <delete id="removeMemberFromTeam">
     delete
     from letsfutsal.team_member
     where team_id = #{teamId}
       and user_id = #{userId}
   </delete>
+  <!-- 팀 멤버 목록 -->
   <select id="selectMembersByTeamId" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.UserDTO">
     select u.*
     from letsfutsal.user u
            join letsfutsal.team_member tm on u.user_id = tm.user_id
     where tm.team_id = #{teamId}
   </select>
+  <!-- 팀 단건 조회 (JOIN 없음) -->
   <select id="selectTeamById" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
     select *
     from letsfutsal.team
     where team_id = #{teamId}
   </select>
+  <!-- 팀 단건 조회 + 팀장 닉네임 JOIN -->
+  <select id="selectTeamWithLeader" parameterType="long" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
+    select t.*, u.nickname as leaderNickname
+    from letsfutsal.team t
+           join letsfutsal.user u on t.leader_id = u.user_id
+    where t.team_id = #{teamId}
+  </select>
+  <!-- 팀 전체 목록 -->
   <select id="selectTeams" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
     select *
     from letsfutsal.team
   </select>
+  <!-- 지역별 팀 목록 -->
   <select id="selectTeamsByRegion" parameterType="string" resultType="io.github.wizwix.letsfutsal.dto.TeamDTO">
     select *
     from letsfutsal.team
     where region = #{region}
   </select>
+  <!-- 등급별 최고 팀 목록 -->
   <select id="selectTopTeamsByGrade" parameterType="int" resultType="io.github.wizwix.letsfutsal.rank.TeamRankDTO">
-        select t.team_id      as teamId,
+    select t.team_id          as teamId,
            t.team_name        as teamName,
            t.region           as region,
            sum(u.point)       as totalPoints,
@@ -52,6 +67,7 @@
     order by averagePoints desc, t.team_id
     limit 10
   </select>
+  <!-- 팀 수정 -->
   <update id="updateTeam" parameterType="io.github.wizwix.letsfutsal.dto.TeamDTO">
     update letsfutsal.team
     set team_name    = #{team.teamName},

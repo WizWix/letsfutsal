@@ -1,15 +1,16 @@
 package io.github.wizwix.letsfutsal.match;
 
 import io.github.wizwix.letsfutsal.dto.MatchDTO;
+import io.github.wizwix.letsfutsal.enums.Gender;
 import io.github.wizwix.letsfutsal.enums.Match;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class MatchService {
-
   private final MatchRepository matchRepository;
 
   public MatchService(MatchRepository matchRepository) {
@@ -22,39 +23,19 @@ public class MatchService {
   }
 
   // 경기 목록 조회
-  public List<MatchDTO> getMatchList(String tab, String stadiumName,
-                                     String startDate, String endDate,
-                                     String gender, Integer minGrade, Integer maxGrade,
-                                     Boolean available) {
-    // 탭에 따라 matchType 설정
-    String matchType = null;
-    if ("개인 경기".equals(tab)) {
-      matchType = "INDIVIDUAL";
-    } else if ("팀 경기".equals(tab)) {
-      matchType = "TEAM";
-    }
+  public List<MatchDTO> getMatchList(String type, String stadiumName, String startHourStr, String endHourStr, String gender, Integer minGrade, Integer maxGrade, Integer status) {
+    if (type.equalsIgnoreCase("all")) type = null;
 
     // 날짜 파싱
-    LocalDateTime startDateTime = null;
-    LocalDateTime endDateTime = null;
-    if (startDate != null && !startDate.trim().isEmpty()) {
-      startDateTime = LocalDateTime.parse(startDate + "T00:00:00");
+    LocalTime startHour = null;
+    LocalTime endHour = null;
+    if (startHourStr != null && !startHourStr.trim().isEmpty()) {
+      startHour = LocalTime.parse(startHourStr);
     }
-    if (endDate != null && !endDate.trim().isEmpty()) {
-      endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
-    }
-
-    // 성별 변환
-    String genderParam = null;
-    if (gender != null && !gender.trim().isEmpty()) {
-      if ("남성".equals(gender)) {
-        genderParam = "MALE";
-      } else if ("여성".equals(gender)) {
-        genderParam = "FEMALE";
-      }
+    if (endHourStr != null && !endHourStr.trim().isEmpty()) {
+      endHour = LocalTime.parse(endHourStr);
     }
 
-    return matchRepository.getMatchList(Match.valueOf(matchType), stadiumName, startDateTime, endDateTime, genderParam, minGrade, maxGrade, available);
+    return matchRepository.getMatchList(type != null ? Match.valueOf(type.toUpperCase()) : null, stadiumName, startHour, endHour, gender != null ? Gender.valueOf(gender.toUpperCase()) : null, minGrade, maxGrade, status);
   }
 }
-

@@ -14,7 +14,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/rank")
 public class RankController {
-  private static final Logger log = LoggerFactory.getLogger(RankController.class);
   private final IRankService rankService;
 
   public RankController(IRankService rankService) {
@@ -22,12 +21,10 @@ public class RankController {
   }
 
   @GetMapping
-  public String rankPage(@RequestParam(defaultValue = "individual") String type,
-                         @RequestParam(defaultValue = "-1") int grade,
-                         @RequestParam(defaultValue = "") String position,
+  public String rankPage(@RequestParam(name = "type", defaultValue = "individual") String type,
+                         @RequestParam(name = "grade", defaultValue = "-1") int grade,
+                         @RequestParam(name = "position", defaultValue = "") String position,
                          Model model) {
-    log.info("Ranking page requested - type: {}, grade: {}, position: {}", type, grade, position);
-
     if ("team".equals(type)) {
       // 팀 랭킹
       List<TeamRankDTO> teamRankings = rankService.getTeamRankings(grade);

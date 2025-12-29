@@ -15,6 +15,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RestController;
 import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,10 +25,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(
     basePackages = "io.github.wizwix.letsfutsal",
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.ANNOTATION,
-        classes = Controller.class
-    )
+    excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {Controller.class, RestController.class})
 )
 @MapperScan("io.github.wizwix.letsfutsal.mapper")
 @EnableTransactionManagement

@@ -7,11 +7,11 @@
 </head>
 <body>
   <h2>팀 생성</h2>
-  <form action="${pageContext.request.contextPath}/team" method="post">
-    팀 이름 : <input name="teamId"><br>
-    성별 : <input type="radio" name="gender" value="혼성">혼성
-        <input type="radio" name="gender" value="남성">남성
-        <input type="radio" name="gender" value="여성">여성<br>
+  <form action="${pageContext.request.contextPath}/team/create" method="post">
+    팀 이름 : <input name="teamName"><br>
+    성별 : <input type="radio" name="gender" value="BOTH">혼성
+        <input type="radio" name="gender" value="MALE">남성
+        <input type="radio" name="gender" value="FEMALE">여성<br>
     최소 등급 : <select name="minGrade">
       <option value="0">무관</option>
       <option value="1">초보</option>

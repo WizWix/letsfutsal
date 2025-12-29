@@ -30,7 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
     '개인': 'INDIVIDUAL',
     '대여': 'RENT',
     '팀': 'TEAM',
-  }
+  };
+
+  const matchGenderMap = {
+    'BOTH': '혼성',
+    'FEMALE': '여성 전용',
+    'MALE': '남성 전용',
+  };
+
+  const matchGradeMap = {
+    0: '미배정',
+    1: '초보',
+    2: '중수',
+    3: '고수',
+  };
 
   function fetchMatches() {
     const date = document.querySelector('input[name="matchDate"]:checked').value;
@@ -56,6 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
     matchList.innerHTML = matches.map(match => {
       const typeLabel = matchTypeMap[match.matchType] || match.matchType;
       const displayTime = match.startHour ? match.startHour.substring(0, 5) : '00:00';
+      const gender = matchGenderMap[match.gender] || match.gender;
+      const minGrade = matchGradeMap[match.minGrade] || match.minGrade;
+      const maxGrade = matchGradeMap[match.maxGrade] || match.maxGrade;
 
       return `
       <div class="col-12 col-md-6 col-lg-4">
@@ -66,10 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-primary fw-bold">${displayTime}</span>
             </div>
             <h5 class="card-title fw-bold">${match.stadiumName || '경기장 명칭'}</h5>
-            <p class="card-text text-muted small">${match.region} | ${match.gender} | ${match.minGrade}~${match.maxGrade}</p>
+            <p class="card-text text-muted small">${match.region} | ${gender} | ${minGrade}~${maxGrade}</p>
             <div class="d-flex justify-content-between align-items-center mt-3">
               <span class="fw-bold">${match.status} 명 참여중</span>
-              <a href="/match/${match.matchId}" class="btn btn-sm btn-primary">신청하기</a>
+              <a href="/match/${match.matchId}" class="btn btn-sm btn-primary">상세보기</a>
             </div>
           </div>
         </div>

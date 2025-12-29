@@ -1,19 +1,18 @@
 package io.github.wizwix.letsfutsal.stadium;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
 import io.github.wizwix.letsfutsal.dto.StadiumDTO;
 import io.github.wizwix.letsfutsal.mapper.StadiumMapper;
-import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class StadiumService {
-
   private final StadiumMapper stadiumMapper;
+
+  public StadiumService(StadiumMapper mapper) {
+    this.stadiumMapper = mapper;
+  }
 
   public void create(StadiumDTO stadium) {
     stadiumMapper.insertStadium(stadium);
@@ -26,5 +25,4 @@ public class StadiumService {
   public List<StadiumDTO> list() {
     return stadiumMapper.selectAllStadiums();
   }
-
 }

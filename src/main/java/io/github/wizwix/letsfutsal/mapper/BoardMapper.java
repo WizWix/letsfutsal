@@ -1,12 +1,15 @@
 package io.github.wizwix.letsfutsal.mapper;
 
 import io.github.wizwix.letsfutsal.dto.ArticleDTO;
+import io.github.wizwix.letsfutsal.dto.CategoryDTO;
 import io.github.wizwix.letsfutsal.dto.CommentDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface BoardMapper {
+  int countTotalArticles();
+
   /// Deletes an article and its associated comments.
   ///
   /// @param articleId The ID of the article to delete.
@@ -29,13 +32,15 @@ public interface BoardMapper {
   ///
   /// @param article `ArticleDTO` that represents the new article.
   /// @return The number of rows affected.
-  int insertArticle(@Param("article") ArticleDTO article);
+  long insertArticle(@Param("article") ArticleDTO article);
 
   /// Insert a new comment into the database.
   ///
   /// @param comment `CommentDTO` that represents the new comment.
   /// @return The number of rows affected.
-  int insertComment(@Param("comment") CommentDTO comment);
+  long insertComment(@Param("comment") CommentDTO comment);
+
+  List<CategoryDTO> selectAllCategories();
 
   /// Retrieves an article by its unique ID.
   ///
@@ -43,10 +48,20 @@ public interface BoardMapper {
   /// @return The `ArticleDTO`, or `null` if not found.
   ArticleDTO selectArticleById(@Param("articleId") long articleId);
 
+  int selectArticleCount(@Param("query") String query, @Param("writer") String writer);
+
+  int selectArticleCountByAuthorNickname(@Param("nickname") String nickname);
+
+  int selectArticleCountByCommentContent(@Param("commentContent") String commentContent);
+
+  int selectArticleCountByContent(@Param("content") String content);
+
+  int selectArticleCountByTitle(@Param("title") String title);
+
   /// Retrieves all articles.
   ///
   /// @return A list of every articles.
-  List<ArticleDTO> selectArticles();
+  List<ArticleDTO> selectArticles(@Param("offset") int offset, @Param("limit") int limit);
 
   /// Searches for articles by author's nickname.
   ///

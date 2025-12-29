@@ -231,7 +231,7 @@ create table letsfutsal.free_board_comment
   created_at datetime default current_timestamp(), -- 댓글 생성일 (자동 생성)
   is_deleted boolean  default false,               -- 삭제된 댓글 플래그 (댓글 트리 구조 보존을 위해 필요)
   constraint pk_fbc primary key (comment_id),
-  constraint fk_fbc_fbc_pid foreign key (parent_id) references letsfutsal.free_board_comment (comment_id),
+  constraint fk_fbc_fbc_pid foreign key (parent_id) references letsfutsal.free_board_comment (comment_id) on delete cascade,
   constraint fk_fbc_fb_artiid foreign key (article_id) references letsfutsal.free_board (article_id) on delete cascade,
   constraint fk_fbc_user_authid foreign key (author_id) references letsfutsal.user (user_id)
 );

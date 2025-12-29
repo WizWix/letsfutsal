@@ -13,7 +13,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/match")
 public class MatchController {
-
   private final MatchService matchService;
 
   public MatchController(MatchService matchService) {
@@ -22,7 +21,7 @@ public class MatchController {
 
   // 경기 상세 보기
   @GetMapping("/{id}")
-  public String detail(@PathVariable Long id, Model model) {
+  public String detail(@PathVariable("id") Long id, Model model) {
     MatchDTO match = matchService.getMatchById(id);
     if (match == null) {
       return "redirect:/match";
@@ -34,30 +33,28 @@ public class MatchController {
 
   // 경기 목록 조회
   @GetMapping
-  public String list(@RequestParam(required = false) String tab,
-                     @RequestParam(required = false) String stadiumName,
-                     @RequestParam(required = false) String startDate,
-                     @RequestParam(required = false) String endDate,
-                     @RequestParam(required = false) String gender,
-                     @RequestParam(required = false) Integer minGrade,
-                     @RequestParam(required = false) Integer maxGrade,
-                     @RequestParam(required = false) Boolean available,
+  public String list(@RequestParam(name = "type", required = false, defaultValue = "all") String type,
+                     @RequestParam(name = "region", required = false) String region,
+                     @RequestParam(name = "startHour", required = false) String startHour,
+                     @RequestParam(name = "endHour", required = false) String endHour,
+                     @RequestParam(name = "gender", required = false) String gender,
+                     @RequestParam(name = "minGrade", required = false) Integer minGrade,
+                     @RequestParam(name = "maxGrade", required = false) Integer maxGrade,
+                     @RequestParam(name = "status", required = false) Integer status,
                      Model model) {
 
-    List<MatchDTO> matches = matchService.getMatchList(tab, stadiumName, startDate, endDate,
-        gender, minGrade, maxGrade, available);
+    List<MatchDTO> matches = matchService.getMatchList(type, region, startHour, endHour, gender, minGrade, maxGrade, status);
 
     model.addAttribute("matches", matches);
-    model.addAttribute("tab", tab != null ? tab : "전체");
-    model.addAttribute("stadiumName", stadiumName);
-    model.addAttribute("startDate", startDate);
-    model.addAttribute("endDate", endDate);
+    model.addAttribute("type", type != null ? type : "all");
+    model.addAttribute("region", region);
+    model.addAttribute("startHour", startHour);
+    model.addAttribute("endHour", endHour);
     model.addAttribute("gender", gender);
     model.addAttribute("minGrade", minGrade);
     model.addAttribute("maxGrade", maxGrade);
-    model.addAttribute("available", available);
+    model.addAttribute("status", status);
 
     return "match/list";
   }
 }
-

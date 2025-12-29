@@ -5,6 +5,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,18 +18,14 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(
     basePackages = "io.github.wizwix.letsfutsal",
     useDefaultFilters = false,
-    includeFilters = {
-        @ComponentScan.Filter(
-            type = FilterType.ANNOTATION,
-            classes = Controller.class
-        ),
-        @ComponentScan.Filter(
-            type = FilterType.REGEX,
-            pattern = ".*Controller"
-        )
-    }
+    includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {Controller.class, RestController.class})
 )
 public class WebConfig implements WebMvcConfigurer {
+  @Override
+  public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+    configurer.enable();
+  }
+
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");

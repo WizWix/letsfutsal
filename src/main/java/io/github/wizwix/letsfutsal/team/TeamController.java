@@ -42,7 +42,7 @@ public class TeamController {
 
   // 팀 가입 페이지
   @GetMapping("/join/{teamId}")
-  public String joinForm(@PathVariable long teamId, Model model) {
+  public String joinForm(@PathVariable("teamId") long teamId, Model model) {
     model.addAttribute("team", service.get(teamId));
     return "team/join";
   }
@@ -55,6 +55,7 @@ public class TeamController {
   }
 
   // 메인
+  @SuppressWarnings("ConfusingMainMethod")
   @GetMapping("")
   public String main() {
     return "team/main";
@@ -62,8 +63,11 @@ public class TeamController {
 
   // 팀 개별 페이지
   @GetMapping("/profile/{teamId}")
-  public String profile(@PathVariable long teamId, Model model) {
-    model.addAttribute("team", service.get(teamId));
+  public String profile(@PathVariable("teamId") long teamId, Model model, HttpSession session) {
+    TeamDTO team = service.get(teamId);
+    model.addAttribute("team", team);
+    UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+    model.addAttribute("loginUser", loginUser);
     return "team/profile";
   }
 

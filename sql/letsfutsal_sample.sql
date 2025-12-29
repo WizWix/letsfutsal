@@ -14,7 +14,8 @@ set foreign_key_checks = 1;
 
 -- user
 insert into letsfutsal.user (email, password, nickname, created_at, gender, preferred_position, introduction, point, grade)
-values ('user1@letsfutsal.test', '12minjun@34', '김민준', '2025-03-15 09:00:00', 'MALE', 'FW', '안녕하세요. 공격수 포지션을 선호하는 김민준입니다.', 150, 2),
+values ('1@local', '1', '테스트', '2025-03-15 09:00:00', 'MALE', 'FW', '테스트 계정', 150, 2),
+       ('user1@letsfutsal.test', '12minjun@34', '김민준', '2025-03-15 09:00:00', 'MALE', 'FW', '안녕하세요. 공격수 포지션을 선호하는 김민준입니다.', 150, 2),
        ('user2@letsfutsal.test', '23seojun@45', '이서준', '2025-03-10 21:00:00', 'MALE', 'MF', '중원을 장악하는 미드필더를 꿈꿉니다.', 220, 3),
        ('user3@letsfutsal.test', '34dohyeon@56', '박도현', '2025-02-20 14:30:00', 'MALE', 'DF', '수비는 저에게 맡겨주세요!', 180, 2),
        ('user4@letsfutsal.test', '45jihu@67', '최지후', '2025-01-10 10:15:00', 'MALE', 'GK', '골키퍼 전문입니다. 10년 경력!', 300, 3),

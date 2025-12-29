@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-  private static final Logger log = LoggerFactory.getLogger(UserController.class);
   private final UserService userService;
 
   public UserController(UserService userService) {

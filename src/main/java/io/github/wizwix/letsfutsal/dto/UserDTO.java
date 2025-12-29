@@ -10,7 +10,7 @@ public class UserDTO {
   LocalDateTime createdAt;
   String email;
   Gender gender;
-  int grade;
+  long grade;
   String introduction;
   String nickname;
   String password;
@@ -29,7 +29,7 @@ public class UserDTO {
     result = result * PRIME + ($email == null ? 43 : $email.hashCode());
     final Object $gender = this.getGender();
     result = result * PRIME + ($gender == null ? 43 : $gender.hashCode());
-    result = result * PRIME + this.getGrade();
+    result = Math.toIntExact((long) result * PRIME + this.getGrade());
     final Object $introduction = this.getIntroduction();
     result = result * PRIME + ($introduction == null ? 43 : $introduction.hashCode());
     final Object $nickname = this.getNickname();
@@ -91,9 +91,9 @@ public class UserDTO {
 
   public void setGender(Gender gender) {this.gender = gender;}
 
-  public int getGrade() {return this.grade;}
+  public long getGrade() {return this.grade;}
 
-  public void setGrade(int grade) {this.grade = grade;}
+  public void setGrade(long grade) {this.grade = grade;}
 
   public String getIntroduction() {return this.introduction;}
 

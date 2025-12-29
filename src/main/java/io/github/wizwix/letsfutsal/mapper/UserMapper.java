@@ -13,7 +13,9 @@ public interface UserMapper {
 
   List<TeamDTO> selectTeamsByUserId(@Param("userId") long userId);
 
-  List<UserDTO> selectTopUsersByGradeAndPosition(int grade, String position);
+  List<UserDTO> selectTopUsersByGradeAndPosition(@Param("grade") int grade, @Param("position") String position);
+
+  String selectNicknameByUserId(@Param("userId") long userId);
 
   UserDTO selectUserByEmail(@Param("email") String email);
 

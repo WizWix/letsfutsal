@@ -15,6 +15,16 @@ public class StadiumDTO {
 
   public StadiumDTO() {}
 
+  public StadiumDTO(long stadiumId, String location, String name, String region, LocalTime startHour, LocalTime endHour, String introduction) {
+    this.stadiumId = stadiumId;
+    this.location = location;
+    this.name = name;
+    this.region = region;
+    this.startHour = startHour;
+    this.endHour = endHour;
+    this.introduction = introduction;
+  }
+
   public int hashCode() {
     final int PRIME = 59;
     int result = 1;

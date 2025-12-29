@@ -38,65 +38,37 @@
   <!-- 경기 목록 조회 (필터링 포함) -->
   <select id="selectMatchList" resultType="io.github.wizwix.letsfutsal.dto.MatchDTO">
     select
-      m.match_id as matchId,
-      s.location as stadiumName,
-      m.match_type as matchType,
-      m.match_datetime as matchDateTime,
-      m.gender,
-      concat(m.min_grade, '~', m.max_grade, '급') as category1,
-      case
-        when m.min_grade = 0 and m.max_grade = 1 then '초급'
-        when m.min_grade = 1 and m.max_grade = 2 then '중급'
-        when m.min_grade = 2 and m.max_grade = 3 then '고급'
-        else '전체'
-      end as category2,
-      s.region as category3,
-      case
-        when m.match_type = 'INDIVIDUAL' then
-          (select count(*) from letsfutsal.match_individual_players where match_id = m.match_id) &lt; 10
-        when m.match_type = 'TEAM' then
-          (select count(*) from letsfutsal.match_team_participants where match_id = m.match_id) &lt; 2
-        else 0
-      end as available
+      m.*,
+      s.name as stadiumName,
+      s.region
     from letsfutsal.game_match m
     join letsfutsal.stadium s on m.stadium_id = s.stadium_id
     where 1=1
-      <if test="matchType != null and matchType != ''">
-        AND m.match_type = #{matchType}
+      <if test="matchType != null">
+        and m.match_type = #{matchType}
       </if>
-      <if test="stadiumName != null and stadiumName != ''">
-        AND (s.location LIKE CONCAT('%', #{stadiumName}, '%') OR s.region LIKE CONCAT('%', #{stadiumName}, '%'))
+      <if test="region != null">
+        and s.region like concat('%', #{region}, '%')
       </if>
-      <if test="startDateTime != null">
-        AND m.match_datetime &gt;= #{startDateTime}
+      <if test="startHour != null">
+        and m.match_date >= curdate() and m.start_hour &gt;= #{startHour}
       </if>
-      <if test="endDateTime != null">
-        AND m.match_datetime &lt;= #{endDateTime}
+      <if test="endHour != null">
+        and m.match_date >= curdate() and m.end_hour &lt;= #{endHour}
       </if>
-      <if test="gender != null and gender != ''">
-        AND m.gender = #{gender}
+      <if test="gender != null">
+        and m.gender = #{gender}
       </if>
       <if test="minGrade != null">
-        AND m.min_grade &lt;= #{minGrade} AND m.max_grade &gt;= #{minGrade}
+        and m.min_grade &lt;= #{minGrade} and m.max_grade &gt;= #{minGrade}
       </if>
       <if test="maxGrade != null">
-        AND m.min_grade &lt;= #{maxGrade} AND m.max_grade &gt;= #{maxGrade}
+        and m.min_grade &lt;= #{maxGrade} and m.max_grade &gt;= #{maxGrade}
       </if>
-      <if test="available != null">
-        AND (
-          <if test="available == true">
-            (m.match_type = 'INDIVIDUAL' AND (SELECT COUNT(*) FROM letsfutsal.match_individual_players WHERE match_id = m.match_id) &lt; 10)
-            OR
-            (m.match_type = 'TEAM' AND (SELECT COUNT(*) FROM letsfutsal.match_team_participants WHERE match_id = m.match_id) &lt; 2)
-          </if>
-          <if test="available == false">
-            (m.match_type = 'INDIVIDUAL' AND (SELECT COUNT(*) FROM letsfutsal.match_individual_players WHERE match_id = m.match_id) &gt;= 10)
-            OR
-            (m.match_type = 'TEAM' AND (SELECT COUNT(*) FROM letsfutsal.match_team_participants WHERE match_id = m.match_id) &gt;= 2)
-          </if>
-        )
+      <if test="status != null">
+        and m.status >= #{status}
       </if>
-    ORDER BY m.match_datetime ASC
+    order by m.match_date
   </select>
   <select id="selectMatchesByFilters" resultType="io.github.wizwix.letsfutsal.dto.MatchDTO">
     select m.*, s.name as stadium_name, s.region
@@ -128,7 +100,7 @@
     from letsfutsal.game_match
     where timestamp(match_date, start_hour) >= now()
       and match_date < date_add(curdate(), interval 8 day)
-    order by status, match_date
+    order by status desc, match_date
     ]]>
   </select>
   <update id="updateMatchStatus">

@@ -11,8 +11,5 @@
     <button type="submit">모든 구장 보기</button>
   </form>
   <br>
-<%--  <form action="<%=request.getContextPath()%>/stadium/rent" method="get">--%>
-<%--    <button type="submit">구장 대여하기</button>--%>
-<%--  </form>--%>
 </body>
 </html>

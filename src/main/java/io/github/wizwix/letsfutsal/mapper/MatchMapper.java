@@ -1,11 +1,13 @@
 package io.github.wizwix.letsfutsal.mapper;
 
 import io.github.wizwix.letsfutsal.dto.MatchDTO;
+import io.github.wizwix.letsfutsal.enums.Gender;
 import io.github.wizwix.letsfutsal.enums.Match;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface MatchMapper {
@@ -25,13 +27,13 @@ public interface MatchMapper {
   MatchDTO selectMatchById(@Param("matchId") long matchId);
 
   List<MatchDTO> selectMatchList(@Param("matchType") Match matchType,
-                                 @Param("stadiumName") String stadiumName,
-                                 @Param("startDateTime") LocalDateTime startDateTime,
-                                 @Param("endDateTime") LocalDateTime endDateTime,
-                                 @Param("gender") String gender,
+                                 @Param("region") String region,
+                                 @Param("startHour") LocalTime startHour,
+                                 @Param("endHour") LocalTime endHour,
+                                 @Param("gender") Gender gender,
                                  @Param("minGrade") Integer minGrade,
                                  @Param("maxGrade") Integer maxGrade,
-                                 @Param("available") Boolean available);
+                                 @Param("status") Integer status);
 
   List<MatchDTO> selectMatchesByFilters(@Param("date") LocalDate date, @Param("region") String region, @Param("type") String type);
 
