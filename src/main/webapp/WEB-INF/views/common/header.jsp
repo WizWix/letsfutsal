@@ -45,21 +45,21 @@
   <!-- 네비게이션 -->
   <nav class="bg-light">
     <div class="container">
-      <ul class="nav nav-pills justify-content-center py-2">
+      <ul class="nav nav-pills justify-content-center py-2 gap-2">
         <li class="nav-item">
-          <a class="nav-link ${param.menu == 'match' ? 'active' : ''}" href="${pageContext.request.contextPath}/match">매치</a>
+          <a class="btn ${param.menu == 'match' ? 'btn-primary' : 'btn-outline-primary'}" href="${pageContext.request.contextPath}/match">매치</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${param.menu == 'team' ? 'active' : ''}" href="${pageContext.request.contextPath}/team">팀</a>
+          <a class="btn ${param.menu == 'team' ? 'btn-primary' : 'btn-outline-primary'}" href="${pageContext.request.contextPath}/team">팀</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${param.menu == 'stadium' ? 'active' : ''}" href="${pageContext.request.contextPath}/stadium">구장</a>
+          <a class="btn ${param.menu == 'stadium' ? 'btn-primary' : 'btn-outline-primary'}" href="${pageContext.request.contextPath}/stadium">구장</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${param.menu == 'rank' ? 'active' : ''}" href="${pageContext.request.contextPath}/rank">랭킹</a>
+          <a class="btn ${param.menu == 'rank' ? 'btn-primary' : 'btn-outline-primary'}" href="${pageContext.request.contextPath}/rank">랭킹</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${param.menu == 'free' ? 'active' : ''}" href="${pageContext.request.contextPath}/free">게시판</a>
+          <a class="btn ${param.menu == 'free' ? 'btn-primary' : 'btn-outline-primary'}" href="${pageContext.request.contextPath}/free">게시판</a>
         </li>
       </ul>
     </div>

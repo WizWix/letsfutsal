@@ -49,21 +49,21 @@
   <!-- 네비게이션 바 -->
   <nav class="bg-light">
     <div class="container">
-      <ul class="nav nav-pills justify-content-center py-2">
+      <ul class="nav nav-pills justify-content-center py-2 gap-2">
         <li class="nav-item">
-          <a class="nav-link" href="${pageContext.request.contextPath}/match">매치</a>
+          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/match">매치</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="${pageContext.request.contextPath}/team">팀</a>
+          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/team">팀</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="${pageContext.request.contextPath}/stadium">구장</a>
+          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/stadium">구장</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="${pageContext.request.contextPath}/rank">랭킹</a>
+          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/rank">랭킹</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="${pageContext.request.contextPath}/free">게시판</a>
+          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/free">게시판</a>
         </li>
       </ul>
     </div>
